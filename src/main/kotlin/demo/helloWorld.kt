@@ -1,13 +1,15 @@
 package demo
 
-fun getGreeting(): String {
-    val words = mutableListOf<String>()
-    words.add("Hello,")
-    words.add("world!")
+import arrow.*
+import arrow.core.*
+import arrow.data.*
+import arrow.instances.*
+import arrow.typeclasses.*
 
-    return words.joinToString(separator = " ")
-}
 
 fun main(args: Array<String>) {
-    println(getGreeting())
+
+  val result = Option.monoid(Int.monoid()).run { listOf<Option<Int>>(Some(1), Some(1)).combineAll() }
+
+  println(result)
 }
