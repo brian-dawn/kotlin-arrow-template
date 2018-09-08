@@ -26,6 +26,9 @@ repositories {
   jcenter()
 }
 
+configurations {
+    ktlint
+}
 
 dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -50,10 +53,32 @@ dependencies {
   compile "io.arrow-kt:arrow-recursion:$arrow_version"
   kapt    "io.arrow-kt:arrow-annotations-processor:$arrow_version"
 
+
+  // Ktlint for code formatting + linting.
+  ktlint "com.github.shyiko:ktlint:0.28.0"
+
   testCompile 'junit:junit:4.11'
   testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 }
 
 task wrapper(type: Wrapper) {
   gradleVersion = "4.1"
+}
+
+task lint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.github.shyiko.ktlint.Main"
+    args "src/**/*.kt"
+    // to generate report in checkstyle format prepend following args:
+    // "--reporter=plain", "--reporter=checkstyle,output=${buildDir}/ktlint.xml"
+    // see https://github.com/shyiko/ktlint#usage for more
+}
+check.dependsOn lint
+
+task format(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.github.shyiko.ktlint.Main"
+    args "-F", "src/**/*.kt"
 }

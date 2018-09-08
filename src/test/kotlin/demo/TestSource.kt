@@ -1,4 +1,4 @@
-package demo 
+package demo
 
 import kotlin.test.assertEquals
 import org.junit.Test
